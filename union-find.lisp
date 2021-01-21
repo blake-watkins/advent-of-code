@@ -1,0 +1,65 @@
+(in-package :aoc)
+
+(defun make-uf (&key (test 'eql))
+  (make-hash-table :test test))
+
+(defun uf-make-node (parent size)
+  (list parent size))
+
+(defun uf-node-parent (node)
+  (car node))
+
+(defun uf-node-size (node)
+  (second node))
+
+(defun uf-make-set (x uf)
+  (unless (gethash x uf)
+    (setf (gethash x uf) (uf-make-node nil 1)))
+  x)
+
+(defun uf-set-size (x uf)
+  (let ((x (uf-find x uf)))
+    (if x
+        (uf-node-size (gethash x uf))
+        0)))
+
+(defun uf-roots (uf)
+  (loop for x being the hash-keys in uf using (hash-value node)
+        unless (uf-node-parent node)
+        collect x))
+
+(defun uf-find (x uf)
+  (let ((node (gethash x uf)))
+    (when node
+      (if (uf-node-parent node)
+          (let* ((parent (uf-node-parent node))
+                 (parent-node (gethash parent uf))
+                 (root (uf-find parent uf)))
+            (unless (funcall (hash-table-test uf) parent root)
+              (setf (gethash parent uf)
+                    (uf-make-node (uf-node-parent parent-node)
+                                  (- (uf-node-size parent-node)
+                                     (uf-node-size node))))
+              (setf (gethash x uf) (uf-make-node root (uf-node-size node))))
+            root) 
+          x))))
+
+(defun uf-union (x y uf)
+  (let ((x (uf-find x uf))
+        (y (uf-find y uf)))
+    (when (and x y)
+      (when (funcall (hash-table-test uf) x y)
+        (return-from uf-union x))
+
+      (let ((x-node (gethash x uf))
+            (y-node (gethash y uf)))
+        (when (< (uf-node-size x-node) (uf-node-size y-node))
+          (rotatef x y)
+          (rotatef x-node y-node))
+        (setf (gethash y uf)
+              (uf-make-node x (uf-node-size y-node)))
+        (setf (gethash x uf)
+              (uf-make-node (uf-node-parent x-node)
+                            (+ (uf-node-size x-node)
+                               (uf-node-size y-node))))
+        x))))
