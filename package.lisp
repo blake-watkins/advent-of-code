@@ -9,6 +9,7 @@
    :aif
    :awhen
    :it
+   :with-gensyms
    
    ;; Parser
    :make-indexed-string
@@ -84,7 +85,8 @@
    :shortest-paths
    :breadth-first-search
    :summed-area-table
-
+   :dijkstra
+   
    ;; Utilities
    :digits-to-int
    :int-to-digits
