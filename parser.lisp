@@ -163,7 +163,7 @@
   "Parses non-empty list of PARSER separated by SEPARATOR which is either a character, string, or other parser."
   (with-monad
     (assign first parser)
-    (assign rest (one-or-more
+    (assign rest (zero-or-more
                   (with-monad
 		    (cond
 		      ((characterp separator) (parse-character separator))
