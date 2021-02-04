@@ -3,7 +3,7 @@
   :version "0.0.1"
   :author "Blake Watkins <blakewatkins@gmail.com>"
   :licence "Creative Commons Attribution 4.0 International License."
-  :depends-on ("drakma" "cl-heap" "sycamore" "iterate")
+  :depends-on ("drakma" "cl-heap" "sycamore" "iterate" "fset")
   :components ((:file "package")
                (:file "util" :depends-on ("package"))
                (:file "functional-queue" :depends-on ("package"))

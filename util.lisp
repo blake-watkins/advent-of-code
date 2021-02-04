@@ -301,3 +301,12 @@
 	       collect (list key value)))))
 
 
+;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
+(defmacro-clause (for item in-fset set-seq-map)
+  (with-gensyms (iterator)
+    `(progn
+       (with ,iterator)
+       (initially (setf ,iterator (fset:iterator ,set-seq-map)))
+       (for ,item next (if (funcall ,iterator :more?)
+                           (funcall ,iterator :get)
+                           (terminate))))))
