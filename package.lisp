@@ -11,6 +11,11 @@
    :it
    :with-gensyms
    
+   ;; Combinatorics
+   :pairs
+   :triples
+   :fours
+   
    ;; Parser
    :make-indexed-string
    :make-rc-string
@@ -33,6 +38,7 @@
    :parse-any-character
    :whitespace-char-p
    :parse-space
+   :parse-whitespace
    :parse-newline
    :parse-line
    :parse-lines

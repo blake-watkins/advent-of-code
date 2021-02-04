@@ -219,6 +219,9 @@
   (or (char= #\Space x)
       (not (graphic-char-p x))))
   
+(defun parse-whitespace ()
+  (zero-or-more (parse-character #'whitespace-char-p)))
+
 (defun parse-space ()
   (parse-character #\Space))
 
