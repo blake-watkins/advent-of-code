@@ -293,6 +293,9 @@
         (int-to-digits-rec '() n)
         )))
 
+(defun manhattan (a b)
+  (apply #'+ (map 'list #'(lambda (a1 b1) (abs (- a1 b1))) a b)))
+
 (defmethod print-object ((object hash-table) stream)
   (let ((*print-pretty* nil))
     (format stream "#HASH{~{~{(~S : ~S)~}~^ ~}}"

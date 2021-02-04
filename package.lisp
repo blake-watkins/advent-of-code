@@ -90,5 +90,4 @@
    ;; Utilities
    :digits-to-int
    :int-to-digits
-   
-   ))
+   :manhattan))
