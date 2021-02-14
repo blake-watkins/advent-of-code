@@ -92,8 +92,11 @@
    :breadth-first-search
    :summed-area-table
    :dijkstra
+   :in-bfs-from
    
    ;; Utilities
    :digits-to-int
    :int-to-digits
-   :manhattan))
+   :manhattan
+   :expt-mod
+   :invmod))

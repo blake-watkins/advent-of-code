@@ -153,10 +153,11 @@
        (for ,vertex next (or (funcall ,next) (terminate))))))
 
 ;; Breadth First Search
-(defun breadth-first-search (vertices neighbours-fn &key (test 'eql) )
+(defun breadth-first-search (vertices neighbours-fn &key (test 'eql) (single nil) )
   (let ((visited (make-hash-table :test test))
 	(frontier (make-queue)))
-    (if (listp (car vertices))
+    (if (and (not single)
+             (listp (car vertices)))
         (iter (for vertex in vertices)
               (setf frontier (queue-push-back (list vertex nil 0 vertex)
                                               frontier)))
