@@ -15,6 +15,11 @@
    :pairs
    :triples
    :fours
+
+   ;; Number Theory
+   :expt-mod
+   :invmod
+   :geometric-sum
    
    ;; Parser
    :make-indexed-string
@@ -97,6 +102,4 @@
    ;; Utilities
    :digits-to-int
    :int-to-digits
-   :manhattan
-   :expt-mod
-   :invmod))
+   :manhattan))

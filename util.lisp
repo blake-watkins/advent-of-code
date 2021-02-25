@@ -118,6 +118,29 @@
      when (= 1 (gcd i n))
      sum 1))
 
+(defun geometric-sum (a n m modulus)
+  "Find geometric sum A^N + A^(N+1) + ... + A^(M-1) + A^M (mod MODULUS)"
+  (labels ((geom-sum-int (a n modulus)
+	     (mod  (cond ((< n 0) 0)
+			 ((= n 0) 1)
+			 ((= n 1) (+ a 1))
+			 ((oddp n)
+			  (* (+ a 1)
+			     (geom-sum-int (expt-mod a 2 modulus)
+					   (/ (- n 1) 2)
+					   modulus)))
+			 ((evenp n)
+			  (+ (* (+ a 1)
+				(geom-sum-int (expt-mod a 2 modulus)
+					      (- (/ n 2) 1)
+					      modulus))
+			     (expt-mod a n modulus))))
+		   modulus)))
+    (mod (- (geom-sum-int a (max n m) modulus)
+            (geom-sum-int a (- (min n m) 1) modulus))
+         modulus)))
+
+
 ;; https://en.wikipedia.org/wiki/Baby-step_giant-step
 ;; n is a prime
 ;; alpha is the generator of the group
@@ -142,14 +165,17 @@
 
 (defmacro-clause (for vertex
                       in-bfs-from start-vertex
-                      neighbours neighbours-fn &optional test (test 'eql))
+                      neighbours neighbours-fn
+                      &optional test (test 'eql) single (single nil))
   (with-gensyms ( next)
     `(progn
        (with ,next)
        (initially (setf ,next (breadth-first-search ,start-vertex
                                                     ,neighbours-fn
                                                     ,@(when test
-                                                        `(:test ,test)))))
+                                                        `(:test ,test))
+                                                    ,@(when single
+                                                        `(:single ,single)))))
        (for ,vertex next (or (funcall ,next) (terminate))))))
 
 ;; Breadth First Search
