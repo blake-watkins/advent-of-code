@@ -212,6 +212,11 @@
   (parse-character #'(lambda (x) x)))
 
 
+(defun parse-until (parser)
+  (either parser
+          (with-monad
+            (parse-any-character)
+            (parse-until parser))))
 
 
 
@@ -292,7 +297,6 @@
 		       
 (defun parse-number-list (&optional (separator #\,))
   (parse-list (parse-number) separator))
-
 
 
 (defmacro run-rc-parser (parser string &key (output-state nil))

@@ -41,6 +41,7 @@
    :parse-character
    :parse-characters
    :parse-any-character
+   :parse-until
    :whitespace-char-p
    :parse-space
    :parse-whitespace
