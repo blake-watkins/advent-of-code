@@ -40,7 +40,7 @@
   (let* ((url (format nil "https://adventofcode.com/~a/day/~a/input" year day))
          (cookie (make-instance 'drakma:cookie
 			        :name "session"
-			        :value ""
+			        :value "" 
 			        :domain ".adventofcode.com"))
          (cookie-jar (make-instance 'drakma:cookie-jar
                                     :cookies (list cookie)))
@@ -95,6 +95,20 @@
        (q nil))
       ((zerop (car r)) (values (cdr r) (cdr s) (cdr u)))       
     (setq q (floor (/ (cdr r) (car r))))))                     
+
+(defun chinese-remainder-theorem (&rest pairs)
+  (reduce
+   (lambda (pair-x pair-y)
+     (destructuring-bind (a-x n-x) pair-x
+       (destructuring-bind (a-y n-y) pair-y
+         (multiple-value-bind (gcd m-x m-y) (egcd n-x n-y)
+           (unless (= gcd 1)
+             (error "Moduli are not coprime"))
+           (let* ((n (* n-x n-y))
+                  (a (+ (* a-x m-y n-y)
+                        (* a-y m-x n-x))))
+             (list (mod a n) n))))))
+   pairs))
 
 (defun invmod (a m)
   "Returns modular inverse of a mod m. Must be coprime."

@@ -17,6 +17,7 @@
    :fours
 
    ;; Number Theory
+   :chinese-remainder-theorem
    :expt-mod
    :invmod
    :geometric-sum
@@ -26,6 +27,7 @@
    :make-rc-string
    :unit
    :bind
+   :parser-fail
    :then
    :with-monad
    :assign
