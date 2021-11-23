@@ -15,7 +15,8 @@
    :pairs
    :triples
    :fours
-
+   :permutations
+   
    ;; Number Theory
    :chinese-remainder-theorem
    :expt-mod
@@ -27,6 +28,8 @@
    :make-rc-string
    :unit
    :bind
+   *bind-function*
+   *unit-function*
    :parser-fail
    :then
    :with-monad
