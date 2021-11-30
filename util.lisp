@@ -40,7 +40,7 @@
   (let* ((url (format nil "https://adventofcode.com/~a/day/~a/input" year day))
          (cookie (make-instance 'drakma:cookie
 			        :name "session"
-			        :value "" 
+			        :value  ""
 			        :domain ".adventofcode.com"))
          (cookie-jar (make-instance 'drakma:cookie-jar
                                     :cookies (list cookie)))
@@ -267,39 +267,36 @@
 ;;             reachable vertex
 ;; neighbours-fn - should be a function accepting a vertex and returning a list of neighbours and their distance
 ;;                 from the vertex
-;; test - test for vertices suitable for hash-table 
-(defun dijkstra (vertex vertex-fn neighbours-fn &key (test 'eql))
-  (let ((visited (make-hash-table :test test))
-	(distance-to (make-hash-table :test test))
+(defun dijkstra (vertex vertex-fn neighbours-fn)
+  (let ((visited (fset:empty-set))
+	(distance-to (fset:empty-map))
 	(frontier (make-instance 'cl-heap:priority-queue)))
-    (setf (gethash vertex distance-to) 0)
+    (fset:includef distance-to vertex 0)
     (cl-heap:enqueue frontier (list vertex nil) 0)
     
     (loop until (= 0 (cl-heap:queue-size frontier))
 	  for (current current-parent) = (cl-heap:dequeue frontier)
-	  for current-distance = (gethash current distance-to)
-	  unless (gethash current visited)
-	    do 
-	       (setf (gethash current visited) t)
-	       (funcall vertex-fn current current-parent current-distance)
+	  for current-distance = (fset:lookup distance-to current)
+	  unless (fset:lookup visited current)
+	  do 
+	     (fset:includef visited current)
+	     (funcall vertex-fn current current-parent current-distance)
 
-	       (loop for (neighbour neighbour-distance)
-		       in (funcall neighbours-fn current)
-		     unless (gethash neighbour visited)
-		       do
-			  (let ((tentative-distance (+ current-distance
-						       neighbour-distance)))
-			    (cl-heap:enqueue frontier
-					     (list neighbour current)
-					     tentative-distance)
+	     (loop for (neighbour neighbour-distance)
+		   in (funcall neighbours-fn current)
+		   unless (fset:lookup visited neighbour)
+		   do
+		      (let ((tentative-distance (+ current-distance
+						   neighbour-distance)))
+			(cl-heap:enqueue frontier
+					 (list neighbour current)
+					 tentative-distance)
 			    
-			    (if (or (not (gethash neighbour distance-to))
-				    (< tentative-distance
-				       (gethash neighbour distance-to)))
-				(setf (gethash neighbour distance-to)
-				      tentative-distance)))))
+			(if (or (not (fset:lookup distance-to neighbour))
+				(< tentative-distance
+				   (fset:lookup distance-to neighbour)))
+			    (fset:includef distance-to neighbour tentative-distance)))))
     distance-to))
-
 
 (defun summed-area-table (fn max-dim)
   "Returns a square table of size MAX-DIM x MAX-DIM containing the sum of all values of the function (FN R C) above and to the left of each square."
@@ -344,6 +341,13 @@
 	       using (hash-value value)
 	       collect (list key value)))))
 
+
+(defun hash-table-from-alist (alist &key (test 'eql))
+  (iter
+    (with ret = (make-hash-table :test test))
+    (for (key . val) in alist)
+    (setf (gethash key ret) val)
+    (finally (return ret))))
 
 ;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
 (defmacro-clause (for item in-fset set-seq-map)
