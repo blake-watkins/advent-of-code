@@ -5,7 +5,8 @@
   :licence "GNU General Public License (GPL) version 3"
   :depends-on ("drakma" "cl-heap" "sycamore" "iterate" "fset")
   :components ((:file "package")
-               (:file "util" :depends-on ("package"))
+               (:file "download-input" :depends-on ("package"))
+               (:file "util" :depends-on ("package" "download-input"))
                (:file "functional-queue" :depends-on ("package"))
                (:file "parser" :depends-on ("package"))
                (:file "union-find" :depends-on ("package"))
