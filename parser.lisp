@@ -219,7 +219,6 @@
             (parse-until parser))))
 
 
-
 (defun whitespace-char-p (x)
   (or (char= #\Space x)
       (not (graphic-char-p x))))
@@ -259,6 +258,7 @@
 
 
 (defun parse-word ()
+  "Parse a group of non-whitespace digits."
   (with-monad
     (assign chars (one-or-more
                    (parse-character (complement #'whitespace-char-p))))

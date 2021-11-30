@@ -108,4 +108,5 @@
    ;; Utilities
    :digits-to-int
    :int-to-digits
-   :manhattan))
+   :manhattan
+   :hash-table-from-alist))
