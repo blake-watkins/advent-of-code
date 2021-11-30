@@ -36,26 +36,13 @@
 				   :if-exists :supersede)
     (format ostream "~a" output)))
 
-(defun download-input (day &optional (year 2020))
-  (let* ((url (format nil "https://adventofcode.com/~a/day/~a/input" year day))
-         (cookie (make-instance 'drakma:cookie
-			        :name "session"
-			        :value  ""
-			        :domain ".adventofcode.com"))
-         (cookie-jar (make-instance 'drakma:cookie-jar
-                                    :cookies (list cookie)))
-	 (response (multiple-value-list 
-		    (drakma:http-request url :cookie-jar cookie-jar))))
-    (if (= (second response) 200)
-	(first response)
-	nil)))
-
 (defun get-problem (day &optional (year 2020))
   (let ((filename (format nil "input~a" day)))
     (if (probe-file filename)
 	(read-file filename)
 	(let ((content (download-input day year)))
-	  (write-file filename content)
+          (when content
+	    (write-file filename content))
 	  content))))
 
 
