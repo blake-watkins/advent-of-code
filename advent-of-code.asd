@@ -2,7 +2,7 @@
   :description "Advent of Code"
   :version "0.0.1"
   :author "Blake Watkins <blakewatkins@gmail.com>"
-  :licence "Creative Commons Attribution 4.0 International License."
+  :licence "GNU General Public License (GPL) version 3"
   :depends-on ("drakma" "cl-heap" "sycamore" "iterate" "fset")
   :components ((:file "package")
                (:file "util" :depends-on ("package"))
