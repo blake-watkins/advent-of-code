@@ -57,6 +57,7 @@
    :parse-upper-case
    :parse-alphanumeric
    :parse-word
+   :parse-keyword
    :parse-string
    :parse-digit
    :parse-number
@@ -106,7 +107,10 @@
    :in-bfs-from
    
    ;; Utilities
+   :string-to-character-list
+   :character-list-to-string
    :digits-to-int
    :int-to-digits
    :manhattan
+   :edit-distance
    :hash-table-from-alist))

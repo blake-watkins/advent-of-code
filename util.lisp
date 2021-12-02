@@ -286,16 +286,17 @@
     distance-to))
 
 (defun summed-area-table (fn max-dim)
-  "Returns a square table of size MAX-DIM x MAX-DIM containing the sum of all values of the function (FN R C) above and to the left of each square."
-  (let ((table (make-array (list max-dim max-dim) :initial-element 0)))
+  "MAX-DIM should be a number or a two element list. If a number, returns a square table of size MAX-DIM x MAX-DIM. If a two element list, returns a rectangular table of dimension MAX-DIM. The table contains the sum of all values of the function (FN R C) above and to the left of each square."
+  (let* ((max-dim (if (numberp max-dim) (list max-dim max-dim) max-dim))
+         (table (make-array max-dim :initial-element 0)))
     (flet ((get-val (r c)
-             (if (and (<= 0 r (1- max-dim))
-                      (<= 0 c (1- max-dim)))
+             (if (and (<= 0 r (1- (first max-dim)))
+                      (<= 0 c (1- (second max-dim))))
                  (aref table r c)
                  0)))
       
-      (iter (for r below max-dim)
-            (iter (for c below max-dim)
+      (iter (for r below (first max-dim))
+            (iter (for c below (second max-dim))
                   (let ((sum (+ (get-val r (1- c))
                                 (get-val (1- r) c)
                                 (- (get-val (1- r) (1- c)))
@@ -304,6 +305,11 @@
                     (setf (aref table r c) sum))))
       table)))
 
+(defun string-to-character-list (s)
+  (iter (for c in-string s) (collect c)))
+
+(defun character-list-to-string (cl)
+  (format nil "~{~a~}" cl))
 
 (defun digits-to-int (digits &key (base 2))
   (reduce #'(lambda (last cur) (+ (* base last) cur)) digits :initial-value 0))
@@ -320,6 +326,28 @@
 
 (defun manhattan (a b)
   (apply #'+ (map 'list #'(lambda (a1 b1) (abs (- a1 b1))) a b)))
+
+;;; https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm
+(defun edit-distance (a b &key (test #'eql))
+  (let ((distance (make-array (list (1+ (length a)) (1+ (length b)))
+                              :initial-element 0)))
+    (iter
+      (for i from 1 to (length a))
+      (setf (aref distance i 0) i))
+    (iter
+      (for j from 1 to (length b))
+      (setf (aref distance 0 j) j))
+    (iter
+      (for j from 1 to (length b))
+      (iter
+        (for i from 1 to (length a))
+        (let ((substitution-cost
+                (if (funcall test (elt a (1- i)) (elt b (1- j))) 0 1)))
+          (setf (aref distance i j)
+                (min (1+ (aref distance (1- i) j))
+                     (1+ (aref distance i (1- j)))
+                     (+ (aref distance (1- i) (1- j)) substitution-cost))))))
+    (aref distance (length a) (length b))))
 
 (defmethod print-object ((object hash-table) stream)
   (let ((*print-pretty* nil))
@@ -344,4 +372,13 @@
        (initially (setf ,iterator (fset:iterator ,set-seq-map)))
        (for ,item next (if (funcall ,iterator :more?)
                            (funcall ,iterator :get)
+                           (terminate))))))
+
+(defmacro-clause (for item in-fset-bag bag)
+  (with-gensyms (iterator)
+    `(progn
+       (with ,iterator)
+       (initially (setf ,iterator (fset:iterator ,bag :pairs? t)))
+       (for ,item next (if (funcall ,iterator :more?)
+                           (multiple-value-list (funcall,iterator :get))
                            (terminate))))))
