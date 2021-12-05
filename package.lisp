@@ -24,17 +24,16 @@
    :geometric-sum
    
    ;; Parser
-   :make-indexed-string
-   :make-rc-string
+   *unit-function*
+   *bind-function*
    :unit
    :bind
-   *bind-function*
-   *unit-function*
    :parser-fail
+   :run-parser
+   :make-indexed-string
    :then
    :with-monad
    :assign
-   :run-parser
    :either
    :zero-or-more
    :one-or-more
@@ -64,6 +63,7 @@
    :parse-number-list
 
    ;; Row Column Parser
+   :make-rc-string
    :run-rc-parser
    :lift-parser-rc
    :parse-rc-get-rc
