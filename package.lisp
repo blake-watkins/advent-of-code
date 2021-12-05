@@ -87,6 +87,12 @@
    :uf-set-size
    :uf-roots
 
+   ;; Points
+   :point+
+   :point-
+   :point-signum
+   :point-abs
+   
    ;; Rectangles
    :rect-id
    :rect-top

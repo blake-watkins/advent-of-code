@@ -10,4 +10,5 @@
                (:file "functional-queue" :depends-on ("package"))
                (:file "parser" :depends-on ("package"))
                (:file "union-find" :depends-on ("package"))
+               (:file "point" :depends-on ("package"))
                (:file "rectangle" :depends-on ("package"))))
