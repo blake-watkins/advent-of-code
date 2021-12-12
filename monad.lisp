@@ -58,3 +58,24 @@
     (rewrite-forms body)))
 
 
+;;; MONAD UTILITY FUNCTIONS
+
+(defun mapm_ (f l)
+  (if (null l)
+      (unit nil)
+      (with-monad
+	(funcall f (car l))
+	(mapM_ f (cdr l)))))
+
+(defmacro whenm (condition &body body)
+  `(if ,condition
+       (progn
+	 ,@body)
+       (unit nil)))
+
+
+(defun mapfsetm_ (f fs)
+  (if (fset:empty? fs)
+      (unit nil)
+      (let ((arb (fset:arb fs)))
+        (then (funcall f arb) (mapfsetm_ f (fset:less fs arb))))))

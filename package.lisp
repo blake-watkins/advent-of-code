@@ -32,9 +32,14 @@
    :with-monad
    :assign
    :either
+   :mapm_
+   :whenm
+   :mapfsetm_
    
    ;; State
    :run-state
+   :make-state
+   :def-state
    
    ;; Parser
    :parser-fail
