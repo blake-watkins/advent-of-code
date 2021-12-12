@@ -324,6 +324,15 @@
         (int-to-digits-rec '() n)
         )))
 
+(defun convert-to-map (list-of-lists)
+  (iter
+    (with ret = (fset:empty-map))
+    (for r below (length list-of-lists))
+    (iter
+      (for c below (length (first list-of-lists)))
+      (fset:includef ret (list r c) (elt (elt list-of-lists r) c)))
+    (finally (return ret))))
+
 (defun manhattan (a b)
   (apply #'+ (map 'list #'(lambda (a1 b1) (abs (- a1 b1))) a b)))
 
