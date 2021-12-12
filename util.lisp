@@ -324,15 +324,6 @@
         (int-to-digits-rec '() n)
         )))
 
-(defun convert-to-map (list-of-lists)
-  (iter
-    (with ret = (fset:empty-map))
-    (for r below (length list-of-lists))
-    (iter
-      (for c below (length (first list-of-lists)))
-      (fset:includef ret (list r c) (elt (elt list-of-lists r) c)))
-    (finally (return ret))))
-
 (defun manhattan (a b)
   (apply #'+ (map 'list #'(lambda (a1 b1) (abs (- a1 b1))) a b)))
 
@@ -372,6 +363,16 @@
     (for (key . val) in alist)
     (setf (gethash key ret) val)
     (finally (return ret))))
+
+(defun map-from-list-list (list-of-lists)
+  (iter
+    (with ret = (fset:empty-map))
+    (for r below (length list-of-lists))
+    (iter
+      (for c below (length (first list-of-lists)))
+      (fset:includef ret (list r c) (elt (elt list-of-lists r) c)))
+    (finally (return ret))))
+
 
 ;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
 (defmacro-clause (for item in-fset set-seq-map)

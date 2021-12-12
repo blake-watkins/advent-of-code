@@ -122,7 +122,7 @@
    :character-list-to-string
    :digits-to-int
    :int-to-digits
-   :convert-to-map
    :manhattan
    :edit-distance
-   :hash-table-from-alist))
+   :hash-table-from-alist
+   :map-from-list-list))
