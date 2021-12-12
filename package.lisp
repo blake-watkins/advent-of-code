@@ -23,18 +23,23 @@
    :invmod
    :geometric-sum
    
-   ;; Parser
+   ;; Monad
    *unit-function*
    *bind-function*
    :unit
    :bind
-   :parser-fail
-   :run-parser
-   :make-indexed-string
    :then
    :with-monad
    :assign
    :either
+   
+   ;; State
+   :run-state
+   
+   ;; Parser
+   :parser-fail
+   :run-parser
+   :make-indexed-string
    :zero-or-more
    :one-or-more
    :two-of
