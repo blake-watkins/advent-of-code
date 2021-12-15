@@ -241,8 +241,7 @@
   (let ((distances (make-hash-table :test test)))
     (iterate (for (cur-vertex parent distance)
                   in-bfs-from vertex
-                  neighbours neighbours-fn
-                  test test)
+                  neighbours neighbours-fn)
              (setf (gethash cur-vertex distances) distance)
              (until (and end-vertex (funcall test cur-vertex end-vertex))))
     distances))
@@ -364,6 +363,24 @@
     (setf (gethash key ret) val)
     (finally (return ret))))
 
+(defun hash-table-from-list-list (list-of-lists)
+  (iter
+    (with ret = (make-hash-table :test 'equal))
+    (for r below (length list-of-lists))
+    (iter
+      (for c below (length (first list-of-lists)))
+      (setf (gethash (list r c) ret)  (elt (elt list-of-lists r) c)))
+    (finally (return ret))))
+
+(defun hash-table-dimensions (hash-table)
+  (with-hash-table-iterator (item hash-table)
+    (iter
+      (with ret = nil)
+      (for (item-p key nil) = (multiple-value-list (item)))
+      (while item-p)
+      (setf ret (if (null ret) key (mapcar #'max ret key)))
+      (finally (return ret)))))
+
 (defun map-from-list-list (list-of-lists)
   (iter
     (with ret = (fset:empty-map))
@@ -373,6 +390,12 @@
       (fset:includef ret (list r c) (elt (elt list-of-lists r) c)))
     (finally (return ret))))
 
+(defun map-dimensions (map)
+  (iter
+    (with max = (fset:arb map))
+    (for pos in-fset map)
+    (setf max (mapcar #'max pos max))
+    (finally (return max))))
 
 ;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
 (defmacro-clause (for item in-fset set-seq-map)

@@ -130,4 +130,7 @@
    :manhattan
    :edit-distance
    :hash-table-from-alist
-   :map-from-list-list))
+   :hash-table-from-list-list
+   :hash-table-dimensions
+   :map-from-list-list
+   :map-dimensions))
