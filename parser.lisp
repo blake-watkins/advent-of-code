@@ -138,7 +138,7 @@
     (unit (cons first rest))))
 
 ;; Used in AoC 2021 Day 16
-(defun parse-subparser (parser length)
+(defun parse-subparser (length parser)
   "Parser that will run PARSER on the next LENGTH (or until eof) characters. Advances over those and returns the results of PARSER if it succeeds, otherwise
 fails."
   (lambda (string)
