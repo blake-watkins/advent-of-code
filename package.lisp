@@ -50,6 +50,7 @@
    :two-of
    :n-of
    :parse-list
+   :parse-subparser
    :parse-empty-p
    :parse-eof
    :parse-character

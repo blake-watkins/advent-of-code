@@ -67,12 +67,20 @@
 	   n)))
 
 (defun indexed-string-tail (string &optional (n 1))
+  "Return the tail of STRING after skipping N characters. Will return a zero length string if this would put it past the end of the string. "
   (make-indexed-string :str (indexed-string-str string)
 		       :cur-idx (min (+ (indexed-string-cur-idx string)
 					n)
 				     (length (indexed-string-str string)))))
 
-
+(defun indexed-string-head (string n)
+  "Return an indexed string with up to N characters of STRING from the current index. Will return less if string is not long enough. "
+  (let ((cur-idx (indexed-string-cur-idx string)))
+    (make-indexed-string :str (subseq (indexed-string-str string)
+                                      cur-idx
+                                      (min (+ cur-idx n)
+                                           (length (indexed-string-str string))))
+                         :cur-idx 0)))
 
 ;; Sequencing parsers
 
@@ -129,6 +137,16 @@
 		    parser)))
     (unit (cons first rest))))
 
+;; Used in AoC 2021 Day 16
+(defun parse-subparser (parser length)
+  "Parser that will run PARSER on the next LENGTH (or until eof) characters. Advances over those and returns the results of PARSER if it succeeds, otherwise
+fails."
+  (lambda (string)
+    (let* ((substring (indexed-string-head string length))
+           (ret (funcall parser substring)))
+      (if ret
+          (list (cons (caar ret) (indexed-string-tail string length)))
+          ()))))
 
 ;; Primitive parsers
 
@@ -248,10 +266,11 @@
 
 
 
-(defun parse-digit ()
+(defun parse-digit (&key (base 10))
+  "Parse a character to a number using the given BASE (default 10). "
   (with-monad
-    (assign digit (parse-character #'digit-char-p))
-    (unit (digit-char-p digit))))
+    (assign digit (parse-character (lambda (c) (digit-char-p c base))))
+    (unit (digit-char-p digit base))))
 
 (defun parse-number (&key (base 10))
   "Parses an integer to the given BASE with an optional sign prefix +-."
