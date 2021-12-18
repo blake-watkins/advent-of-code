@@ -397,21 +397,26 @@
     (setf max (mapcar #'max pos max))
     (finally (return max))))
 
-;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
-(defmacro-clause (for item in-fset set-seq-map)
-  (with-gensyms (iterator)
-    `(progn
-       (with ,iterator)
-       (initially (setf ,iterator (fset:iterator ,set-seq-map)))
-       (for ,item next (if (funcall ,iterator :more?)
-                           (funcall ,iterator :get)
-                           (terminate))))))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  ;;; Allow iterate macro to work over fset sets seqs and maps. Iterates over map keys.
+  (defmacro-clause (for item in-fset set-seq-map)
+    (with-gensyms (iterator)
+      `(progn
+         (with ,iterator)
+         (initially (setf ,iterator (fset:iterator ,set-seq-map)))
+         (for ,item next (if (funcall ,iterator :more?)
+                             (funcall ,iterator :get)
+                             (terminate))))))
+  
+  (defmacro-clause (for item in-fset-bag bag)
+    (with-gensyms (iterator)
+      `(progn
+         (with ,iterator)
+         (initially (setf ,iterator (fset:iterator ,bag :pairs? t)))
+         (for ,item next (if (funcall ,iterator :more?)
+                             (multiple-value-list (funcall,iterator :get))
+                             (terminate)))))))
 
-(defmacro-clause (for item in-fset-bag bag)
-  (with-gensyms (iterator)
-    `(progn
-       (with ,iterator)
-       (initially (setf ,iterator (fset:iterator ,bag :pairs? t)))
-       (for ,item next (if (funcall ,iterator :more?)
-                           (multiple-value-list (funcall,iterator :get))
-                           (terminate))))))
+
+
+
