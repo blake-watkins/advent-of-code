@@ -35,6 +35,17 @@
    :mapm_
    :whenm
    :mapfsetm_
+   :concatm
+   :iterate-untilm
+   
+   ;; Maybe
+   :maybe-fail
+   :maybe-mplus
+   :maybe-zero
+   :run-maybe
+   :from-maybe
+   :is-just
+   :is-nothing
    
    ;; State
    :run-state
@@ -122,6 +133,29 @@
    :summed-area-table
    :dijkstra
    :in-bfs-from
+
+   ;; Zipper
+   :tree-from-zipper
+   :zipper-from-tree
+   :zipper-tree
+   :zipper-crumbs
+   :zipper-depth
+   :zipper-rootp
+   :zipper-leafp
+   :zipper-siblingp
+   :go-left
+   :go-right
+   :go-up
+   :leftmost
+   :rightmost
+   :topmost
+   :go-left-sibling
+   :go-right-sibling
+   :go-next
+   :go-prev
+   :modify
+   :attach
+   :find-in-tree
    
    ;; Utilities
    :string-to-character-list

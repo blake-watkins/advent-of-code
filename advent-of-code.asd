@@ -9,6 +9,8 @@
                (:file "util" :depends-on ("package" "download-input"))
                (:file "functional-queue" :depends-on ("package"))
                (:file "monad" :depends-on ("package"))
+               (:file "maybe" :depends-on ("monad" "package"))
+               (:file "zipper" :depends-on ("maybe" "package"))
                (:file "state" :depends-on ("monad" "package"))
                (:file "parser" :depends-on ("monad" "package"))
                (:file "union-find" :depends-on ("package"))

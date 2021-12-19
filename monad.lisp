@@ -79,3 +79,22 @@
       (unit nil)
       (let ((arb (fset:arb fs)))
         (then (funcall f arb) (mapfsetm_ f (fset:less fs arb))))))
+
+;; Haskell Control-Monad-Loops.html
+
+;; Monad m => [a -> m a] -> a -> m a
+(defun concatm (&rest monads)
+  (lambda (value)
+    (if (null monads)
+	(unit value)      
+	(with-monad
+	  (assign new-value (funcall (car monads) value))
+	  (funcall (apply #'concatm (cdr monads)) new-value)))))
+
+;; Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
+(defun iterate-untilm (pred f)
+  (lambda (value)
+    (if (funcall pred value)
+	(unit value)
+	(funcall (concatm f (iterate-untilm pred f)) value))))
+
