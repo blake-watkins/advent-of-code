@@ -155,6 +155,7 @@
    :go-prev
    :modify
    :attach
+   :with-zipper
    :find-in-tree
    
    ;; Utilities

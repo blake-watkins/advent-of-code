@@ -102,6 +102,10 @@
   (lambda (zipper)
     (unit (list new-tree (zipper-crumbs zipper)))))
 
+(defmacro with-zipper (zipper &body body)
+  `(funcall (concatm
+             ,@body)
+            ,zipper))
 ;;find-in-tree :: Tree a -> (a -> Bool) -> Maybe Zipper a
 (defun find-in-tree (tree pred &optional (depth 0) (crumbs nil))
   "Find the first node in the tree that satisfies PRED. Return a zipper to that node. Return :nothing if there is none. "
