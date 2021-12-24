@@ -284,6 +284,39 @@
 			    (fset:includef distance-to neighbour tentative-distance)))))
     distance-to))
 
+(defun a-star (vertex vertex-fn neighbours-fn heuristic-fn)
+  (let ((visited (fset:empty-set))
+	(g-score (fset:empty-map))
+	(open-set (make-instance 'cl-heap:priority-queue)))
+    (fset:includef g-score vertex 0)
+    (cl-heap:enqueue open-set (list vertex nil) 0)
+    
+    (loop until (= 0 (cl-heap:queue-size open-set))
+	  for (current current-parent) = (cl-heap:dequeue open-set)
+	  for current-distance = (fset:lookup g-score current)
+	  unless (fset:lookup visited current)
+	  do
+	     (fset:includef visited current)
+	     (funcall vertex-fn current current-parent current-distance)
+
+	     (loop for (neighbour neighbour-distance)
+		   in (funcall neighbours-fn current)
+		   unless (fset:lookup visited neighbour)
+		   do
+		      (let ((tentative-distance (+ current-distance
+						   neighbour-distance)))
+
+			(when (or (null (fset:lookup g-score neighbour))
+				  (< tentative-distance
+				     (fset:lookup g-score neighbour)))
+			  (fset:includef g-score neighbour tentative-distance)
+                          (cl-heap:enqueue open-set
+					   (list neighbour current)
+					   (+ tentative-distance
+                                              (funcall heuristic-fn
+                                                       neighbour)))))))
+    nil))
+
 (defun summed-area-table (fn max-dim)
   "MAX-DIM should be a number or a two element list. If a number, returns a square table of size MAX-DIM x MAX-DIM. If a two element list, returns a rectangular table of dimension MAX-DIM. The table contains the sum of all values of the function (FN R C) above and to the left of each square."
   (let* ((max-dim (if (numberp max-dim) (list max-dim max-dim) max-dim))

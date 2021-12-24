@@ -132,6 +132,7 @@
    :breadth-first-search
    :summed-area-table
    :dijkstra
+   :a-star
    :in-bfs-from
 
    ;; Zipper
