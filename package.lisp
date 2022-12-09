@@ -68,6 +68,7 @@
    :parse-characters
    :parse-any-character
    :parse-until
+   :parse-bracketed
    :whitespace-char-p
    :parse-space
    :parse-whitespace

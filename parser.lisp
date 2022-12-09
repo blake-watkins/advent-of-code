@@ -191,7 +191,6 @@ fails."
 (defun parse-any-character ()
   (parse-character #'(lambda (x) x)))
 
-
 (defun parse-until (parser)
   "Parser that runs PARSER at subsequent characters until it succeeds."
   (either parser
@@ -199,6 +198,12 @@ fails."
             (parse-any-character)
             (parse-until parser))))
 
+(defun parse-bracketed (content brackets)
+  (with-monad
+    (parse-character (elt brackets 0))
+    (assign ret content)
+    (parse-character (elt brackets 1))
+    (unit ret)))
 
 (defun whitespace-char-p (x)
   (or (char= #\Space x)
