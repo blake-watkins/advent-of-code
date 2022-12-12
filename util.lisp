@@ -199,59 +199,40 @@
        (for ,vertex next (or (funcall ,next) (terminate))))))
 
 ;; Breadth First Search
-(defun breadth-first-search (vertices neighbours-fn &key (test 'eql) (single nil) )
+;; Returns a generator function that will generate vertices in BFS order.
+;; If vertices is a list with a list as the first element, assumes it is a
+;; list of vertices to start from. Can force VERTICES to be interpreted as a single
+;; vertex by setting :SINGLE to T.
+;; NEIGHBOURS-FN should take a vertex and return a list of possible neighbours
+(defun breadth-first-search (vertices neighbours-fn &key (test 'eql) (single nil))
   (let ((visited (make-hash-table :test test))
 	(frontier (make-queue)))
-    (if (and (not single)
-             (listp (car vertices)))
-        (iter (for vertex in vertices)
-              (setf frontier (queue-push-back (list vertex nil 0 vertex)
-                                              frontier)))
-        (setf frontier (queue-push-back (list vertices nil 0 vertices)
-                                        frontier)))
-
-    (labels ((add-neighbours (vertex distance root frontier)
-               (queue-push-back
-		(mapcar #'(lambda (v) (list v vertex (1+ distance) root))
-			(funcall neighbours-fn vertex))
-		frontier
-		:as-list t))
+    (if (and (not single) (listp (car vertices)))
+        (iter
+          (for vertex in vertices)
+          (queue-push-backf (list vertex nil 0 vertex) frontier))
+        (queue-push-backf (list vertices nil 0 vertices) frontier))
+    (labels ((get-neighbours (vertex distance root)
+               (mapcar (lambda (v)
+                         (list v vertex (1+ distance) root))
+		       (funcall neighbours-fn vertex)))       
              (next ()
-               (loop while (not (queue-empty-p frontier))
-                     do (multiple-value-bind (vertex-info new-frontier)
-                            (queue-pop-front frontier)
-                          (setf frontier new-frontier)
-                          
-	                  (destructuring-bind (vertex
-                                               from-vertex
-                                               distance
-                                               root)
-                              vertex-info
-	                    (when (or (not (gethash vertex visited))
-                                      (and (= distance
-                                              (first (gethash vertex visited)))
-                                           (not (find root
-                                                      (second
-                                                       (gethash vertex visited))
-                                                      :test test))))
-                              (if (not (gethash vertex visited))
-                                  (setf (gethash vertex visited)
-                                        (list distance (list root)))
-                                  (destructuring-bind (distance roots)
-                                      (gethash vertex visited)
-                                    (setf (gethash vertex visited)
-                                          (list distance (cons root roots)))))
-                              
-                              (setf frontier (add-neighbours vertex
-                                                             distance
-                                                             root
-                                                             frontier))
-                              (return-from next
-                                (list vertex
-                                      from-vertex
-                                      distance
-                                      root))))))))
-
+               (iter
+                 (while (not (queue-empty-p frontier)))
+                 (for (vertex from-vertex distance root) =
+                      (queue-pop-frontf frontier))
+                 (when (or (not (gethash vertex visited))
+                           (and (= distance (first (gethash vertex visited)))
+                                (not (find root
+                                           (second (gethash vertex visited))
+                                           :test test))))
+                   (let ((roots (second (gethash vertex visited nil))))
+                     (setf (gethash vertex visited)
+                           (list distance (cons root roots))))
+                   (queue-push-backf (get-neighbours vertex distance root)
+                                     frontier
+                                     :as-list t)
+                   (return-from next (list vertex from-vertex distance root))))))
       #'next)))
 
 ;; finds the shortest paths from vertex to all other vertices
