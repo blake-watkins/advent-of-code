@@ -135,6 +135,7 @@
    :dijkstra
    :a-star
    :in-bfs-from
+   :in-dijkstra-from
 
    ;; Zipper
    :tree-from-zipper

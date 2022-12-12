@@ -246,43 +246,56 @@
              (until (and end-vertex (funcall test cur-vertex end-vertex))))
     distances))
 
-
 ;; Dijkstra's algorithm
+;; Generates vertices in order of Dijkstra's algorithm.
 ;; vertex - starting vertex
-;; vertex-fn - should be a function accepting three arguments: vertex, parent, distance. will be called on each
-;;             reachable vertex
 ;; neighbours-fn - should be a function accepting a vertex and returning a list of neighbours and their distance
 ;;                 from the vertex
-(defun dijkstra (vertex vertex-fn neighbours-fn)
+(defun dijkstra-generator (vertex neighbours-fn)
   (let ((visited (fset:empty-set))
 	(distance-to (fset:empty-map))
 	(frontier (make-instance 'cl-heap:priority-queue)))
     (fset:includef distance-to vertex 0)
     (cl-heap:enqueue frontier (list vertex nil) 0)
     
-    (loop until (= 0 (cl-heap:queue-size frontier))
-	  for (current current-parent) = (cl-heap:dequeue frontier)
-	  for current-distance = (fset:lookup distance-to current)
-	  unless (fset:lookup visited current)
-	  do 
-	     (fset:includef visited current)
-	     (funcall vertex-fn current current-parent current-distance)
-
-	     (loop for (neighbour neighbour-distance)
-		   in (funcall neighbours-fn current)
-		   unless (fset:lookup visited neighbour)
-		   do
-		      (let ((tentative-distance (+ current-distance
-						   neighbour-distance)))
-			(cl-heap:enqueue frontier
-					 (list neighbour current)
-					 tentative-distance)
+    (labels ((next ()
+               (iter
+                 (until (zerop (cl-heap:queue-size frontier)))
+                 (for (vertex parent) = (cl-heap:dequeue frontier))
+                 (for distance = (fset:lookup distance-to vertex))
+                 (unless (fset:lookup visited vertex)
+                   (fset:includef visited vertex)
+                   (iter
+                     (for (neighbour neighbour-distance) in
+                          (funcall neighbours-fn vertex))
+                     (unless (fset:lookup visited neighbour)
+                       (let ((tentative-distance (+ distance neighbour-distance)))
+			 (cl-heap:enqueue frontier
+					  (list neighbour vertex)
+					  tentative-distance)
 			    
-			(if (or (not (fset:lookup distance-to neighbour))
-				(< tentative-distance
-				   (fset:lookup distance-to neighbour)))
-			    (fset:includef distance-to neighbour tentative-distance)))))
-    distance-to))
+			 (if (or (not (fset:lookup distance-to neighbour))
+				 (< tentative-distance
+				    (fset:lookup distance-to neighbour)))
+			     (fset:includef distance-to
+                                            neighbour
+                                            tentative-distance)))))
+                   (return-from next (list vertex parent distance))))))
+      #'next)))
+
+(defmacro-clause (for vertex
+                      in-dijkstra-from start-vertex
+                      neighbours neighbours-fn)
+  (with-gensyms ( next)
+    `(progn
+       (with ,next)
+       (initially (setf ,next (dijkstra-generator ,start-vertex ,neighbours-fn)))
+       (for ,vertex next (or (funcall ,next) (terminate))))))
+
+(defun dijkstra (vertex vertex-fn neighbours-fn)
+  (iter
+    (for vertex-info in-dijkstra-from vertex neighbours neighbours-fn)
+    (apply vertex-fn vertex-info)))
 
 (defun a-star (vertex vertex-fn neighbours-fn heuristic-fn)
   (let ((visited (fset:empty-set))
