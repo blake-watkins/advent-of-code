@@ -84,14 +84,18 @@
 
 ;; Sequencing parsers
 
-(defun either (&rest parsers)
+;;; Written as macro to allow recursive defs using either - see 2022 Day 13.
+(defmacro either (&rest parsers)
   "Parser that tries each parser in PARSERS in order and returns the first successful parse."
-  (lambda (string)
-    (loop
-      for parser in parsers
-      for result = (funcall parser string)
-      while (null result)
-      finally (return result))))
+  (with-gensyms (string ret)
+    `(lambda (,string)
+       (declare (ignorable ,string))
+       ,(if (null parsers)
+	    nil
+	    `(let ((,ret (funcall ,(car parsers) ,string)))
+	       (if (null ,ret)
+		   (funcall (either2 ,@(cdr parsers)) ,string)
+		   ,ret))))))
 
 (defun zero-or-more (parser)
   "Parser that parses zero or more lots of PARSER. Always successfully returns with list of results. "
