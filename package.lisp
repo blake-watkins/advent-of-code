@@ -172,4 +172,15 @@
    :hash-table-from-list-list
    :hash-table-dimensions
    :map-from-list-list
-   :map-dimensions))
+   :map-dimensions
+
+   ;; Intervals
+   :interval-start
+   :interval-end
+   :interval-size
+   :interval-contains
+   :intervals-contain
+   :intervals-size   
+   :interval-intersect
+   :intervals-intersect
+   :intervals-normalize))
