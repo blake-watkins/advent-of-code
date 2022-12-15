@@ -84,22 +84,22 @@
 
 ;; Sequencing parsers
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun rewrite-either (parsers)
+    (with-gensyms (string ret)
+      (cond
+        ((null parsers) nil)
+        ((= 1 (length parsers)) (car parsers))
+        (t `(lambda (,string)
+	      (let ((,ret (funcall ,(car parsers) ,string)))
+	        (if (null ,ret)
+		    (funcall ,(rewrite-either (cdr parsers)) ,string)
+		    ,ret)))))))
 
 ;;; Written as macro to allow recursive defs using either - see 2022 Day 13.
-(defmacro either (&rest parsers)
-  "Parser that tries each parser in PARSERS in order and returns the first successful parse."
-  (rewrite-either parsers))
-
-(defun rewrite-either (parsers)
-  (with-gensyms (string ret)
-    (cond
-      ((null parsers) nil)
-      ((= 1 (length parsers)) (car parsers))
-      (t `(lambda (,string)
-	    (let ((,ret (funcall ,(car parsers) ,string)))
-	      (if (null ,ret)
-		  (funcall ,(rewrite-either (cdr parsers)) ,string)
-		  ,ret)))))))
+  (defmacro either (&rest parsers)
+    "Parser that tries each parser in PARSERS in order and returns the first successful parse."
+    (rewrite-either parsers)))
 
 (defun zero-or-more (parser)
   "Parser that parses zero or more lots of PARSER. Always successfully returns with list of results. "
