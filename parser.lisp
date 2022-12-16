@@ -251,17 +251,17 @@ fails."
 (defun parse-alphanumeric ()
   (parse-character #'alphanumericp))
 
-(defun parse-word ()
-  "Parser that parses a group of non-whitespace digits."
+(defun parse-word (&optional (item (complement #'whitespace-char-p)))
+  "Parser that parses a group of characters as a word, default non-whitespace digits. ITEM is a function that should return T for characters to include. "
   (with-monad
     (assign chars (one-or-more
-                   (parse-character (complement #'whitespace-char-p))))
+                   (parse-character item)))
     (unit (format nil "~{~A~}" chars))))
 
-(defun parse-keyword ()
+(defun parse-keyword (&optional (item (complement #'whitespace-char-p)))
   "Parser that runs PARSE-WORD to parse a group of non-whitespace digits and then returns that group as a symbol interned in the KEYWORD package. "
   (with-monad
-    (assign word (parse-word))
+    (assign word (parse-word item))
     (unit (intern (string-upcase word) :keyword))))
 
 (defun parse-string (string)
