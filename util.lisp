@@ -186,7 +186,7 @@
 (defmacro-clause (for vertex
                       in-bfs-from start-vertex
                       neighbours neighbours-fn
-                      &optional test (test 'eql) single (single nil))
+                      &optional test (test ''cl:eql) single (single nil))
   (with-gensyms ( next)
     `(progn
        (with ,next)
