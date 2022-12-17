@@ -16,6 +16,7 @@
    :triples
    :fours
    :permutations
+   :combinations
    
    ;; Number Theory
    :chinese-remainder-theorem

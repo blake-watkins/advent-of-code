@@ -74,6 +74,18 @@
               append (mapcar (lambda (l) (cons element l))
                              (permutations (remove element list)))))))
 
+
+(defun combinations (list)
+  "Take list of elements. Return list of lists of combinations."
+  (when list
+    (destructuring-bind (head . rest) list
+      (if (null rest)
+          (list (list head) nil)
+          (let ((rec (combinations rest)))
+            (concatenate 'list
+                         (mapcar (lambda (l) (cons head l)) rec)
+                         rec))))))
+
 (defun pairs (list)
   (loop for (a . rest) on list
      nconc (loop for b in rest collect (list a b))))
