@@ -116,6 +116,8 @@
    :point-
    :point-signum
    :point-abs
+   :point-max
+   :point-min
    
    ;; Rectangles
    :rect-id
