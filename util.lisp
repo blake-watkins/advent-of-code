@@ -426,7 +426,7 @@
     (with ret = (make-hash-table :test 'equal))
     (for r below (length list-of-lists))
     (iter
-      (for c below (length (first list-of-lists)))
+      (for c below (length (elt list-of-lists r)))        
       (setf (gethash (list r c) ret)  (elt (elt list-of-lists r) c)))
     (finally (return ret))))
 
