@@ -114,6 +114,7 @@
    ;; Points
    :point+
    :point-
+   :point*
    :point-signum
    :point-abs
    :point-max

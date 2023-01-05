@@ -6,6 +6,9 @@
 (defun point- (&rest points)
   (apply #'map 'list #'- points))
 
+(defun point* (k point)
+  (mapcar (lambda (c) (* c k)) point))
+
 (defun point-signum (point)
   (mapcar #'signum point))
 
