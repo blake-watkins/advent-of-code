@@ -187,4 +187,14 @@
    :intervals-size   
    :interval-intersect
    :intervals-intersect
-   :intervals-normalize))
+   :intervals-normalize
+
+   ;; Quarternions
+   :q*
+   :q-conjugate
+   :q-norm
+   :q-normalize
+   :q-reciprocal
+   :q-round
+   :q-rotor
+   :q-rotate-vector))
