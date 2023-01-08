@@ -28,4 +28,4 @@
 
 (defun q-rotate-vector (vector rotor)
   (let ((rotor-1 (q-reciprocal rotor)))
-    (cdr (q* rotor (q* (q-pure-q vector) rotor-1)))))
+    (cdr (q* rotor (q* (cons 0 vector) rotor-1)))))
