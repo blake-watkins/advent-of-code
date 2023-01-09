@@ -1,6 +1,6 @@
 (in-package :aoc)
 
-(defun q* (q1 q2)
+(defun q-compose (q1 q2)
   (destructuring-bind (a1 b1 c1 d1) (if (numberp q1) (list q1 0 0 0) q1)
     (destructuring-bind (a2 b2 c2 d2) (if (numberp q2) (list q2 0 0 0) q2)
       (list (+ (* a1 a2) (* -1 b1 b2) (* -1 c1 c2) (* -1 d1 d2))
@@ -15,10 +15,10 @@
   (sqrt (reduce #'+ q :key (lambda (x) (* x x)) :initial-value 0)))
 
 (defun q-normalize (q)
-  (q* (/ 1 (q-norm q)) q))
+  (q-compose (/ 1 (q-norm q)) q))
 
 (defun q-reciprocal (q)
-  (q* (/ 1 (expt (q-norm q) 2)) (q-conjugate q)))
+  (q-compose (/ 1 (expt (q-norm q) 2)) (q-conjugate q)))
 
 (defun q-round (q)
   (mapcar #'round q))
@@ -28,4 +28,4 @@
 
 (defun q-rotate-vector (vector rotor)
   (let ((rotor-1 (q-reciprocal rotor)))
-    (cdr (q* rotor (q* (cons 0 vector) rotor-1)))))
+    (cdr (q-compose rotor (q-compose (cons 0 vector) rotor-1)))))

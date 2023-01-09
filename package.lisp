@@ -190,7 +190,7 @@
    :intervals-normalize
 
    ;; Quarternions
-   :q*
+   :q-compose
    :q-conjugate
    :q-norm
    :q-normalize
