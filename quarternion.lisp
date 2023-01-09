@@ -11,14 +11,17 @@
 (defun q-conjugate (q)
   (cons (first q) (mapcar #'- (cdr q))))
 
+(defun q-norm-2 (q)
+  (reduce #'+ q :key (lambda (x) (* x x)) :initial-value 0))
+
 (defun q-norm (q)
-  (sqrt (reduce #'+ q :key (lambda (x) (* x x)) :initial-value 0)))
+  (sqrt (q-norm-2 q)))
 
 (defun q-normalize (q)
   (q-compose (/ 1 (q-norm q)) q))
 
 (defun q-reciprocal (q)
-  (q-compose (/ 1 (expt (q-norm q) 2)) (q-conjugate q)))
+  (q-compose (/ 1 (q-norm-2 q)) (q-conjugate q)))
 
 (defun q-round (q)
   (mapcar #'round q))
