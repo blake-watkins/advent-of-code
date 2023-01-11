@@ -17,4 +17,4 @@
                (:file "point" :depends-on ("package"))
                (:file "rectangle" :depends-on ("package"))
                (:file "interval" :depends-on ("package"))
-               (:file "quarternion" :depends-on ("package"))))
+               (:file "quaternion" :depends-on ("package"))))
