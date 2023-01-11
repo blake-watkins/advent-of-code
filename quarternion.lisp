@@ -32,3 +32,6 @@
 (defun q-rotate-vector (vector rotor)
   (let ((rotor-1 (q-reciprocal rotor)))
     (cdr (q-compose rotor (q-compose (cons 0 vector) rotor-1)))))
+
+(defun q-conjugate-by (q x)
+  (q-compose x (q-compose q (q-reciprocal x))))

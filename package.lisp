@@ -197,4 +197,5 @@
    :q-reciprocal
    :q-round
    :q-rotor
-   :q-rotate-vector))
+   :q-rotate-vector
+   :q-conjugate-by))
