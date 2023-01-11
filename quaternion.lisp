@@ -1,12 +1,14 @@
 (in-package :aoc)
 
 (defun q-compose (q1 q2)
-  (destructuring-bind (a1 b1 c1 d1) (if (numberp q1) (list q1 0 0 0) q1)
-    (destructuring-bind (a2 b2 c2 d2) (if (numberp q2) (list q2 0 0 0) q2)
-      (list (+ (* a1 a2) (* -1 b1 b2) (* -1 c1 c2) (* -1 d1 d2))
-            (+ (* a1 b2) (* b1 a2)    (* c1 d2)    (* -1 d1 c2))
-            (+ (* a1 c2) (* -1 b1 d2) (* c1 a2)    (* d1 b2))
-            (+ (* a1 d2) (* b1 c2)    (* -1 c1 b2) (* d1 a2))))))
+  (if (listp q1)
+      (destructuring-bind (a1 b1 c1 d1) q1
+        (destructuring-bind (a2 b2 c2 d2) q2
+          (list (+ (* a1 a2) (* -1 b1 b2) (* -1 c1 c2) (* -1 d1 d2))
+                (+ (* a1 b2) (* b1 a2)    (* c1 d2)    (* -1 d1 c2))
+                (+ (* a1 c2) (* -1 b1 d2) (* c1 a2)    (* d1 b2))
+                (+ (* a1 d2) (* b1 c2)    (* -1 c1 b2) (* d1 a2)))))
+      (mapcar (lambda (x) (* q1 x)) q2)))
 
 (defun q-conjugate (q)
   (cons (first q) (mapcar #'- (cdr q))))
