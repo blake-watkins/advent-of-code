@@ -1,5 +1,6 @@
 (in-package :aoc)
 
+;; https://en.wikipedia.org/wiki/Quaternion#Hamilton_product 
 (defun q-compose (q1 q2)
   (if (listp q1)
       (destructuring-bind (a1 b1 c1 d1) q1
@@ -10,6 +11,7 @@
                 (+ (* a1 d2) (* b1 c2)    (* -1 c1 b2) (* d1 a2)))))
       (mapcar (lambda (x) (* q1 x)) q2)))
 
+;;https://en.wikipedia.org/wiki/Quaternion#Conjugation,_the_norm,_and_reciprocal
 (defun q-conjugate (q)
   (cons (first q) (mapcar #'- (cdr q))))
 
@@ -28,6 +30,7 @@
 (defun q-round (q)
   (mapcar #'round q))
 
+;;https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Using_quaternions_as_rotations
 (defun q-rotor (angle axis)
   (cons (cos (/ angle 2)) (mapcar (lambda (c) (* (sin (/ angle 2)) c)) axis)))
 
