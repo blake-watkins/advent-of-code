@@ -431,6 +431,7 @@
     (finally (return ret))))
 
 (defun hash-table-dimensions (hash-table)
+  "Returns list of biggest coordinate for each dimension of hash table."
   (with-hash-table-iterator (item hash-table)
     (iter
       (with ret = nil)
