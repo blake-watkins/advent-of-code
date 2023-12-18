@@ -290,7 +290,7 @@ fails."
   (with-monad
     (assign sign (either (parse-character "-+")			 
 			 (unit #\+)))
-    (assign digits (one-or-more (parse-digit)))
+    (assign digits (one-or-more (parse-digit :base base)))
     (unit (* (if (char= sign #\-) -1 1)
              (digits-to-int digits :base base)))))
 		       
