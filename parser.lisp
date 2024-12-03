@@ -122,6 +122,18 @@
     (assign second parser)
     (unit (list first second))))
 
+(defun up-to-n-of (n parser)
+  "Parser that runs PARSER up to N times. Returns the results in a list."
+  (labels ((up-to-n-of-rec (acc n)
+	     (if (= n 0)
+		 (unit (nreverse acc))
+		 (either
+                  (with-monad
+                    (assign result parser)
+                    (up-to-n-of-rec (cons result acc) (- n 1)))
+                  (unit (nreverse acc))))))
+    (up-to-n-of-rec '() n)))
+
 (defun n-of (n parser)
   "Parser that runs PARSER N times. Returns the results in a list."
   (labels ((n-of-rec (acc n)

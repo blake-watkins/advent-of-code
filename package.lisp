@@ -61,6 +61,7 @@
    :one-or-more
    :two-of
    :n-of
+   :up-to-n-of
    :parse-list
    :parse-subparser
    :parse-empty-p
